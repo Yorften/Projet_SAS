@@ -19,33 +19,6 @@ int tach_comp = 0;
 tache T[100];
 
 int syntaxDate(tache T[],int i){
-    /*time_t seconds=time(NULL);
-    struct tm* current_time=localtime(&seconds); 
-    int currentYear = (current_time->tm_year + 1900);
-    int currentMonth =(current_time->tm_mon + 1);
-    int currentDay =current_time->tm_mday;
-
-    if (T[i].date.a > currentYear) goto check;
-
-    if(T[i].date.a < currentYear){
-        printf("Entree invalide. Veuillez saisir une annee valide (%d - ...).\n",currentYear);
-        while (getchar() != '\n');
-        return 1;
-    }else   if(T[i].date.a = currentYear){
-                if(T[i].date.m > currentMonth){   
-                goto check; 
-                }else   if(T[i].date.m < currentMonth){
-                            printf("Entree invalide. Veuillez saisir un mois valide .\n");
-                            while (getchar() != '\n');
-                            return 1;
-                        }else   if(T[i].date.m = currentMonth){
-                                    if(T[i].date.j <= currentDay){
-                                        printf("Entree invalide. Veuillez saisir un jour valide .\n");
-                                        while (getchar() != '\n');
-                                        return 1;
-                                    }           
-                                }
-            }*/
 check:
     switch ((char)T[i].date.m){
     case 2: 
@@ -90,11 +63,9 @@ input:
             printf("\nSaisir les informations du tache n%d \n", i+1);
             T[i].id=i+1;
             printf("Titre : ");
-            fgets(T[i].title,100,stdin);
-            T[i].title[strcspn(T[i].title,"\n")]=0;
+            scanf(" %[^\n]",T[i].title);
             printf("Description : ");
-            fgets(T[i].desc,100,stdin);
-            T[i].desc[strcspn(T[i].desc,"\n")]=0;
+            scanf(" %[^\n]",T[i].desc);
             do{
                 date:
                 printf("Date limite (ex: 11/03/2024) : ");
@@ -113,7 +84,7 @@ input:
                 goto status;
             }
             if (choice2 <= 0 || choice2 >= 4){
-                printf("Choix invalide. Veuillez saisir une option valide (1-4).\n");
+                printf("Choix invalide. Veuillez saisir une option valide (1-3).\n");
                 goto status;
             }
             switch (choice2){
@@ -222,7 +193,7 @@ void tasksDeadline(){
             printf("\t\t|Tache : %-31s  |\n", T[i].title);
             printf("\t\t|Description : %-26s |\n", T[i].desc);
             printf("\t\t|Deadline : %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
-            printf("\t\t|Jours avant deadline: %-18ld |\n", T[i].date.j - currentDay);
+            printf("\t\t|Jours avant deadline: %-3ld                |\n", T[i].date.j - currentDay);
             printf("\t\t+-----------------------------------------+\n");
         }else c++;
     }
@@ -242,7 +213,7 @@ void completedTasks(tache T[]){
     int incomplete = 0;
     int i;
     for ( i = 0; i < tach_comp; i++){
-        if(strcmp(T[i].status,"En cours")==0){
+        if(strcmp(T[i].status,"A realiser")==0 || strcmp(T[i].status,"En cours")==0){
             incomplete++;
         }else complete++;
     }
@@ -276,14 +247,78 @@ void showTasksDeadline(tache T[]){
 
 void modDesc(tache T[]){
     int id;
+    int c=0;
+    printf("\t\tDonnez l'id de la tache :");
+    scanf("%d",&id);
+
+    for (int i = 0; i < tach_comp; i++){
+        if (T[i].id==id){
+            c++;
+            printf("\t\tEntrez la nouvelle description :");
+            scanf(" %[^\n]",T[i].desc);
+        }
+    }
+    if(c==0) printf("\t\tIl n\'y a pas de tache avec l\'Id %d\n",id);
 }
 
 void modStatus(tache T[]){
+    int id,choice2;
+    int c=0;
+    printf("\t\tDonnez l'id de la tache :");
+    scanf("%d",&id);
 
+    for (int i = 0; i < tach_comp; i++){
+        if (T[i].id==id){
+            c++;
+            status:
+            printf("\t\t\t\tStatus du tache :\n \t1- A realiser | 2- En cours | 3- Finalisee  : ");
+            if ( scanf("%d", &choice2) != 1) {
+                printf("\t\tEntree invalide. Veuillez saisir un entier valide.\n");
+                    // Clear the input buffer
+                while (getchar() != '\n');
+                goto status;
+            }
+            if (choice2 <= 0 || choice2 >= 4){
+                printf("\t\tChoix invalide. Veuillez saisir une option valide (1-3).\n");
+                goto status;
+            }
+            switch (choice2){
+                case 1:
+                    strcpy(T[i].status,"A realiser");
+                    break;
+                case 2:
+                    strcpy(T[i].status,"En cours");
+                    break;
+                case 3:
+                    strcpy(T[i].status,"Finalisee");
+                    break;    
+            }
+        }
+    }
+    if(c==0) printf("\t\tIl n\'y a pas de tache avec l\'Id %d\n",id);
 }
 
 void modDeadline(tache T[]){
+    int id;
+    int c=0;
+    printf("\t\tDonnez l'id de la tache :");
+    scanf("%d",&id);
 
+    for (int i = 0; i < tach_comp; i++){
+        if (T[i].id==id){
+            c++;
+            do{
+                date:
+                printf("\t\tDate limite (ex: 11/03/2024) : ");
+                if (scanf("%d/%d/%d", &T[i].date.j, &T[i].date.m, &T[i].date.a) != 3){
+                    printf("\t\tFormat d\'entree invalide. Veuillez utiliser le format jj/mm/aaaa.\n");
+                    while (getchar() != '\n');
+                    goto date; // Exit with an error code
+                }
+            }while(syntaxDate(T,i));
+        }
+    }
+    
 }
 
 int deleteTask(tache T[]){
@@ -336,13 +371,13 @@ void findById(tache T[]){
     for (int i = 0; i < tach_comp; i++){
             if(T[i].id==id){
                 c++;
-                printf("\t\t+----------------------------------------+\n");
+                printf("\t\t+-----------------------------------------+\n");
                 printf("\t\t|Id : %-34d |\n",T[i].id);
-                printf("\t\t|Tache : %-31s |\n", T[i].title);
-                printf("\t\t|Description: %-26s |\n", T[i].desc);
-                printf("\t\t|Deadline: %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
-                printf("\t\t|Days until deadline: %-10ld jour(s) |\n", abs(T[i].date.j - currentDay));
-                printf("\t\t+----------------------------------------+\n");
+                printf("\t\t|Tache : %-31s  |\n", T[i].title);
+                printf("\t\t|Description : %-26s |\n", T[i].desc);
+                printf("\t\t|Deadline : %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
+                printf("\t\t|Jours avant deadline: %-3ld jour(s)        |\n", abs(T[i].date.j - currentDay));
+                printf("\t\t+-----------------------------------------+\n");
             }
     }
     if(c==0) printf("\t\tIl n\'y a pas de tache avec l\'Id %d\n",id);
@@ -355,18 +390,18 @@ void findByTitle(tache T[]){
     struct tm* current_time=localtime(&seconds); 
     int currentDay =current_time->tm_mday;
 
-    printf("Donnez le titre de la tache :");
+    printf("\t\tDonnez le titre de la tache :");
     scanf(" %[^\n]",toFind);
     for (int i = 0; i < tach_comp; i++){
         if(strcmp(T[i].title,toFind)==0){
             c++;
-            printf("\t\t+----------------------------------------+\n");
-            printf("\t\t|Id : %-34d |\n",T[i].id);
-            printf("\t\t|Tache : %-31s |\n", T[i].title);
-            printf("\t\t|Description: %-26s |\n", T[i].desc);
-            printf("\t\t|Deadline: %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
-            printf("\t\t|Days until deadline: %-10ld jour(s) |\n", T[i].date.j - currentDay);
-            printf("\t\t+----------------------------------------+\n");
+            printf("\t\t+-----------------------------------------+\n");
+            printf("\t\t|Id : %-34d  |\n",T[i].id);
+            printf("\t\t|Tache : %-31s  |\n", T[i].title);
+            printf("\t\t|Description : %-26s |\n", T[i].desc);
+            printf("\t\t|Deadline : %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
+            printf("\t\t|Jours avant deadline: %-3ld jour(s)        |\n", abs(T[i].date.j - currentDay));
+            printf("\t\t+-----------------------------------------+\n");
         }
     }
     if(c==0) printf("\t\tIl n\'y a pas de tache avec le titre %s\n",toFind);
@@ -434,7 +469,7 @@ int managementMenu(){
             printf("\t\t+----------------------------------------+\n");
             printf("\t\t|                                        |\n");
             printf("\t\t|     1- Modifier la description         |\n");
-            printf("\t\t|     2- Modifier le statut              |\n");
+            printf("\t\t|     2- Modifier le status              |\n");
             printf("\t\t|     3- Modifier le deadline            |\n");
             printf("\t\t|     4- Supprimer une tache             |\n");
             printf("\t\t|     5- Rechercher par Id               |\n");

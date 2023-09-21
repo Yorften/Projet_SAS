@@ -25,16 +25,14 @@ int main(){
                         
                             printf("\n\tChoix :");
                             
-                            if ( scanf("%d", &choice) != 1) 
-                            {
+                            if ( scanf("%d", &choice) != 1) {
                                 printf("Entree invalide. Veuillez saisir un entier valide.\n");
                                     // Clear the input buffer
                                 while (getchar() != '\n');
                                 goto saisir;
                             }
 
-                            if (choice <= 0 || choice >= 6)
-                            {
+                            if (choice <= 0 || choice >= 6){
                                 printf("Choix invalide. Veuillez saisir une option valide (1-5).\n");
                                 goto saisir;
                             }
