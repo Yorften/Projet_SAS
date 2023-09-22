@@ -37,10 +37,7 @@ check:
         else
             return 0;
         break;
-    case 4:
-    case 6:
-    case 9:
-    case 11:
+    case 4: case 6: case 9: case 11:
         if (T[i].date.j >= 31 || T[i].date.j <= 0)
         {
             printf("Entree invalide. Veuillez saisir un jour valid (1-30).\n\n");
@@ -51,13 +48,7 @@ check:
         else
             return 0;
         break;
-    case 1:
-    case 3:
-    case 5:
-    case 7:
-    case 8:
-    case 10:
-    case 12:
+    case 1: case 3: case 5: case 7: case 8: case 10: case 12:
         if (T[i].date.j >= 32 || T[i].date.j <= 0)
         {
             printf("Entree invalide. Veuillez saisir un jour valid (1-31).\n\n");
@@ -92,11 +83,13 @@ input:
     p = n + tach_comp;
     for (i = tach_comp; i < p; i++)
     {
-        getchar();
+        //getchar();
         printf("\nSaisir les informations du tache n%d \n", ID + 1);
         T[i].id = ID + 1;
         printf("Titre : ");
         scanf(" %[^\n]", T[i].title);
+        //fgets(T[i].title,100,stdin);
+        //T[i].title[strcspn(T[i].title,"\n")]=0;
         printf("Description : ");
         scanf(" %[^\n]", T[i].desc);
         do
