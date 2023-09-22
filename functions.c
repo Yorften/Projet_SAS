@@ -18,6 +18,7 @@ typedef struct tache
 } tache;
 
 int tach_comp = 0;
+int ID = 0;
 tache T[100];
 
 int syntaxDate(tache T[], int i)
@@ -69,7 +70,8 @@ check:
         break;
     default:
         printf("Mois invalide. Veuillez saisir un mois valid (1-12).\n\n");
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
         return 1;
         break;
     }
@@ -91,8 +93,8 @@ input:
     for (i = tach_comp; i < p; i++)
     {
         getchar();
-        printf("\nSaisir les informations du tache n%d \n", i + 1);
-        T[i].id = i + 1;
+        printf("\nSaisir les informations du tache n%d \n", ID + 1);
+        T[i].id = ID + 1;
         printf("Titre : ");
         scanf(" %[^\n]", T[i].title);
         printf("Description : ");
@@ -104,7 +106,8 @@ input:
             if (scanf("%d/%d/%d", &T[i].date.j, &T[i].date.m, &T[i].date.a) != 3)
             {
                 printf("Format d'entree invalide. Veuillez utiliser le format jj/mm/aaaa.\n\n");
-                while (getchar() != '\n');
+                while (getchar() != '\n')
+                    ;
             }
         } while (syntaxDate(T, i));
     status:
@@ -112,7 +115,8 @@ input:
         if (scanf("%d", &choice2) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             goto status;
         }
         if (choice2 <= 0 || choice2 >= 4)
@@ -133,6 +137,7 @@ input:
             break;
         }
         tach_comp++;
+        ID++;
     }
 }
 
@@ -301,11 +306,11 @@ void showTasksDeadline(tache T[])
         delai = days - (Year * 365 + Month * 30 + Day);
         if (delai > 0)
         {
-            printf("\t\t| Id : %2d | Titre : %-20s | Delai :%3d jour(s)         |\n", T[i].id, T[i].title, delai);
+            printf("\t\t| Id : %2d | Titre : %-20s | Delai : Dans %3d jour(s)    |\n", T[i].id, T[i].title, delai);
         }
         else if (delai < 0)
         {
-            printf("\t\t| Id : %2d | Titre : %-20s | Delai : il y a %3d jour(s)  |\n", T[i].id, T[i].title, abs(delai));
+            printf("\t\t| Id : %2d | Titre : %-20s | Delai : Il y a %3d jour(s)  |\n", T[i].id, T[i].title, abs(delai));
         }
         else
             printf("\t\t| Id : %2d | Titre : %-20s | Delai : Aujourd\'hui         |\n", T[i].id, T[i].title);
@@ -418,7 +423,8 @@ confirm:
     if (scanf("%d", &choix) != 1)
     {
         printf("\t\tEntree invalide. Veuillez saisir un entier valide (1- Oui | 0- Non).\n\n");
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
         goto confirm;
     }
     if (choix < 0 || choix >= 2)
@@ -437,26 +443,30 @@ confirm:
             if (T[i].id == id)
             {
                 c++;
-                for (int j = i; i < tach_comp - 1; i++)
+                for (int j = i; j < tach_comp - 1; j++)
                 {
-                    T[i] = T[j + 1];
-                    i++;
+                    T[j] = T[j + 1];
                 }
                 tach_comp--;
             }
         }
         if (c == 0)
             printf("\t\tIl n\'y a pas de tache avec l\'Id %d\n\n", id);
-        break;
+        else{
+            showTask(T);
+            break;
+        } 
     }
 }
 
 void findById(tache T[])
 {
-    int id;
+    int id, days, delai;
     int c = 0;
     time_t seconds = time(NULL);
     struct tm *current_time = localtime(&seconds);
+    int Year = (current_time->tm_year + 1900);
+    int Month = (current_time->tm_mon + 1);
     int Day = current_time->tm_mday;
     printf("\t\tDonnez l'id de la tache :");
     scanf("%d", &id);
@@ -465,13 +475,24 @@ void findById(tache T[])
     {
         if (T[i].id == id)
         {
+            days = T[i].date.a * 365 + T[i].date.m * 30 + T[i].date.j;
+            delai = days - (Year * 365 + Month * 30 + Day);
             c++;
             printf("\t\t+-----------------------------------------+\n");
-            printf("\t\t|Id : %-34d |\n", T[i].id);
+            printf("\t\t|Id : %-34d  |\n", T[i].id);
             printf("\t\t|Tache : %-31s  |\n", T[i].title);
             printf("\t\t|Description : %-26s |\n", T[i].desc);
             printf("\t\t|Deadline : %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
-            printf("\t\t|Jours avant deadline: %-3ld jour(s)        |\n", abs(T[i].date.j - Day));
+            if (delai > 0)
+            {
+                printf("\t\t|Delai : %-3ld jour(s)                      |\n", delai);
+            }
+            else if (delai < 0)
+            {
+                printf("\t\t|Delai : Il y a %3d jour(s)               |\n", abs(delai));
+            }
+            else
+                printf("\t\t|Delai : Aujourd\'hui                      |\n");
             printf("\t\t+-----------------------------------------+\n");
         }
     }
@@ -481,10 +502,13 @@ void findById(tache T[])
 
 void findByTitle(tache T[])
 {
+    int days, delai;
     char toFind[20];
     int c = 0;
     time_t seconds = time(NULL);
     struct tm *current_time = localtime(&seconds);
+    int Year = (current_time->tm_year + 1900);
+    int Month = (current_time->tm_mon + 1);
     int Day = current_time->tm_mday;
 
     printf("\t\tDonnez le titre de la tache :");
@@ -493,13 +517,24 @@ void findByTitle(tache T[])
     {
         if (strcmp(T[i].title, toFind) == 0)
         {
+            days = T[i].date.a * 365 + T[i].date.m * 30 + T[i].date.j;
+            delai = days - (Year * 365 + Month * 30 + Day);
             c++;
             printf("\t\t+-----------------------------------------+\n");
             printf("\t\t|Id : %-34d  |\n", T[i].id);
             printf("\t\t|Tache : %-31s  |\n", T[i].title);
             printf("\t\t|Description : %-26s |\n", T[i].desc);
             printf("\t\t|Deadline : %-02d/%02d/%-23d |\n", T[i].date.j, T[i].date.m, T[i].date.a);
-            printf("\t\t|Jours avant deadline: %-3ld jour(s)        |\n", abs(T[i].date.j - Day));
+            if (delai > 0)
+            {
+                printf("\t\t|Delai : %-3ld jour(s)                      |\n", delai);
+            }
+            else if (delai < 0)
+            {
+                printf("\t\t|Delai : Il y a %3d jour(s)               |\n", abs(delai));
+            }
+            else
+                printf("\t\t|Delai : Aujourd\'hui                      |\n");
             printf("\t\t+-----------------------------------------+\n");
         }
     }
@@ -529,7 +564,8 @@ int taskMenu()
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             goto saisir;
         }
         if (choice <= 0 || choice >= 6)
@@ -586,7 +622,8 @@ int managementMenu()
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             goto saisir;
         }
         if (choice <= 0 || choice >= 8)
@@ -648,7 +685,8 @@ int statsMenu()
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n');
+            while (getchar() != '\n')
+                ;
             goto saisir;
         }
         if (choice <= 0 || choice >= 5)
