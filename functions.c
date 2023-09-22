@@ -30,8 +30,7 @@ check:
         if (T[i].date.j >= 29 || T[i].date.j <= 0)
         {
             printf("Entree invalide. Veuillez saisir un jour valid (1-28).\n\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             return 1;
         }
         else
@@ -99,8 +98,7 @@ input:
             if (scanf("%d/%d/%d", &T[i].date.j, &T[i].date.m, &T[i].date.a) != 3)
             {
                 printf("Format d'entree invalide. Veuillez utiliser le format jj/mm/aaaa.\n\n");
-                while (getchar() != '\n')
-                    ;
+                while (getchar() != '\n');
             }
         } while (syntaxDate(T, i));
     status:
@@ -108,8 +106,7 @@ input:
         if (scanf("%d", &choice2) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             goto status;
         }
         if (choice2 <= 0 || choice2 >= 4)
@@ -253,7 +250,7 @@ void tasksDeadline()
             c++;
     }
     if (c == tach_comp)
-        printf("\t\tIl n\'y a pas des taches qu'on 3 jours ou mins do delai.\n\n");
+        printf("\t\tIl n\'y a pas des taches qu'on 3 jours ou moins de delai.\n\n");
 }
 
 void tasksNumber(tache T[])
@@ -349,8 +346,7 @@ void modStatus(tache T[])
             if (scanf("%d", &choice2) != 1)
             {
                 printf("\t\tEntree invalide. Veuillez saisir un entier valide.\n\n");
-                while (getchar() != '\n')
-                    ;
+                while (getchar() != '\n');
                 goto status;
             }
             if (choice2 <= 0 || choice2 >= 4)
@@ -395,8 +391,7 @@ void modDeadline(tache T[])
                 if (scanf("%d/%d/%d", &T[i].date.j, &T[i].date.m, &T[i].date.a) != 3)
                 {
                     printf("\t\tFormat d\'entree invalide. Veuillez utiliser le format jj/mm/aaaa.\n");
-                    while (getchar() != '\n')
-                        ;
+                    while (getchar() != '\n');
                     goto date;
                 }
             } while (syntaxDate(T, i));
@@ -416,8 +411,7 @@ confirm:
     if (scanf("%d", &choix) != 1)
     {
         printf("\t\tEntree invalide. Veuillez saisir un entier valide (1- Oui | 0- Non).\n\n");
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
         goto confirm;
     }
     if (choix < 0 || choix >= 2)
@@ -557,8 +551,7 @@ int taskMenu()
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             goto saisir;
         }
         if (choice <= 0 || choice >= 6)
@@ -615,8 +608,7 @@ int managementMenu()
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             goto saisir;
         }
         if (choice <= 0 || choice >= 8)
@@ -678,8 +670,7 @@ int statsMenu()
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             goto saisir;
         }
         if (choice <= 0 || choice >= 5)
