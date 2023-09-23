@@ -21,19 +21,17 @@ int main(){
                 printf("\t\t|                                        |\n");
                 printf("\t\t+----------------------------------------+\n");
 
-                        saisir:
+                       
                             printf("\n\tChoix :");
                             
                             if ( scanf("%d", &choice) != 1) {
                                 printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
                                     // Clear the input buffer
                                 while (getchar() != '\n');
-                                goto saisir;
                             }
 
                             if (choice <= 0 || choice >= 6){
                                 printf("Choix invalide. Veuillez saisir une option valide (1-5).\n\n");
-                                goto saisir;
                             }
                             switch (choice)
                             {
@@ -53,9 +51,8 @@ int main(){
                             case 5:
                                 exit(0);
                                 break;
-                            
                             }
-    }while (choice <=6);
+    }while (choice !=5);
     return 0;
 }
 

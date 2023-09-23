@@ -23,13 +23,13 @@ tache T[100];
 
 int syntaxDate(tache T[], int i)
 {
-check:
-    switch ((char)T[i].date.m)
+    switch (T[i].date.m)
     {
     case 2:
         if (T[i].date.j >= 29 || T[i].date.j <= 0)
         {
             printf("Entree invalide. Veuillez saisir un jour valid (1-28).\n\n");
+                // Clear the input buffer
             while (getchar() != '\n');
             return 1;
         }
@@ -40,8 +40,7 @@ check:
         if (T[i].date.j >= 31 || T[i].date.j <= 0)
         {
             printf("Entree invalide. Veuillez saisir un jour valid (1-30).\n\n");
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             return 1;
         }
         else
@@ -70,14 +69,15 @@ check:
 void addTask()
 {
     int i, n, p, choice2;
-input:
-    printf("Combien des taches vous souhaitez ajouter : ");
-    if (scanf("%d", &n) != 1)
-    {
-        printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
-        // Clear the input buffer
-        while (getchar() != '\n');
-        goto input;
+while(1){
+
+        printf("Combien des taches voulez-vous ajouter : ");
+        if (scanf("%d", &n) == 1){
+            break;
+        }else{
+            printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
+            while (getchar() != '\n');
+        }
     }
     p = n + tach_comp;
     for (i = tach_comp; i < p; i++)
@@ -101,18 +101,16 @@ input:
                 while (getchar() != '\n');
             }
         } while (syntaxDate(T, i));
-    status:
+    do{
         printf("Status du tache :\n \t1- A realiser | 2- En cours | 3- Finalisee  : ");
         if (scanf("%d", &choice2) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
             while (getchar() != '\n');
-            goto status;
         }
         if (choice2 <= 0 || choice2 >= 4)
         {
             printf("Choix invalide. Veuillez saisir une option valide (1-3).\n\n");
-            goto status;
         }
         switch (choice2)
         {
@@ -126,6 +124,7 @@ input:
             strcpy(T[i].status, "Finalisee");
             break;
         }
+    }while(choice2 != 3);
         tach_comp++;
         ID++;
     }
@@ -340,19 +339,17 @@ void modStatus(tache T[])
     {
         if (T[i].id == id)
         {
+            do{
             c++;
-        status:
             printf("\t\t\t\tStatus du tache :\n \t1- A realiser | 2- En cours | 3- Finalisee  : ");
             if (scanf("%d", &choice2) != 1)
             {
                 printf("\t\tEntree invalide. Veuillez saisir un entier valide.\n\n");
                 while (getchar() != '\n');
-                goto status;
             }
-            if (choice2 <= 0 || choice2 >= 4)
+            else
             {
                 printf("\t\tChoix invalide. Veuillez saisir une option valide (1-3).\n\n");
-                goto status;
             }
             switch (choice2)
             {
@@ -366,6 +363,7 @@ void modStatus(tache T[])
                 strcpy(T[i].status, "Finalisee");
                 break;
             }
+            }while(choice2 != 3);
         }
     }
     if (c == 0)
@@ -386,13 +384,11 @@ void modDeadline(tache T[])
             c++;
             do
             {
-            date:
                 printf("\t\tDate limite (ex: 11/03/2024) : ");
                 if (scanf("%d/%d/%d", &T[i].date.j, &T[i].date.m, &T[i].date.a) != 3)
                 {
                     printf("\t\tFormat d\'entree invalide. Veuillez utiliser le format jj/mm/aaaa.\n");
                     while (getchar() != '\n');
-                    goto date;
                 }
             } while (syntaxDate(T, i));
         }
@@ -406,19 +402,14 @@ int deleteTask(tache T[])
     int choix;
     printf("\t\tDonnez l'id de la tache :");
     scanf("%d", &id);
-confirm:
-    printf("\t\tConfirmer (1- Oui | 0- Non) : ");
-    if (scanf("%d", &choix) != 1)
-    {
-        printf("\t\tEntree invalide. Veuillez saisir un entier valide (1- Oui | 0- Non).\n\n");
-        while (getchar() != '\n');
-        goto confirm;
-    }
-    if (choix < 0 || choix >= 2)
-    {
-        printf("\t\tChoix invalide. Veuillez saisir une option valide (0 OU 1).\n\n");
-        goto confirm;
-    }
+    do{
+        printf("\t\tConfirmer (1- Oui | 0- Non) : ");
+        if (scanf("%d", &choix) != 1 || choix !=0 && choix != 1)
+        {
+            printf("\t\tEntree invalide. Veuillez saisir un entier valide (1- Oui | 0- Non).\n\n");
+            while (getchar() != '\n');
+        }
+    }while(choix != 0 && choix !=1);
     switch (choix)
     {
     case 0:
@@ -546,18 +537,15 @@ int taskMenu()
         printf("\t\t|                                        |\n");
         printf("\t\t+----------------------------------------+\n");
 
-    saisir:
         printf("\n\tChoix :");
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
             while (getchar() != '\n');
-            goto saisir;
         }
         if (choice <= 0 || choice >= 6)
         {
             printf("Choix invalide. Veuillez saisir une option valide (1-5).\n\n");
-            goto saisir;
         }
         switch (choice)
         {
@@ -581,7 +569,7 @@ int taskMenu()
             return 0;
             break;
         }
-    } while (choice <= 6);
+    } while (choice != 5);
 }
 
 int managementMenu()
@@ -603,18 +591,15 @@ int managementMenu()
         printf("\t\t|                                        |\n");
         printf("\t\t+----------------------------------------+\n");
 
-    saisir:
         printf("\n\tChoix :");
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
             while (getchar() != '\n');
-            goto saisir;
         }
         if (choice <= 0 || choice >= 8)
         {
             printf("Choix invalide. Veuillez saisir une option valide (1-7).\n\n");
-            goto saisir;
         }
         switch (choice)
         {
@@ -646,7 +631,7 @@ int managementMenu()
             return 0;
             break;
         }
-    } while (choice <= 8);
+    } while (choice != 7);
 }
 
 int statsMenu()
@@ -665,18 +650,15 @@ int statsMenu()
         printf("\t\t|                                        |\n");
         printf("\t\t+----------------------------------------+\n");
 
-    saisir:
         printf("\n\tChoix :");
         if (scanf("%d", &choice) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
             while (getchar() != '\n');
-            goto saisir;
         }
         if (choice <= 0 || choice >= 5)
         {
             printf("Choix invalide. Veuillez saisir une option valide (1-4).\n\n");
-            goto saisir;
         }
         switch (choice)
         {
@@ -696,5 +678,5 @@ int statsMenu()
             return 0;
             break;
         }
-    } while (choice <= 5);
+    } while (choice != 4);
 }
