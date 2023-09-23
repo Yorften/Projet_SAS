@@ -101,16 +101,18 @@ while(1){
                 while (getchar() != '\n');
             }
         } while (syntaxDate(T, i));
-    do{
+    status:
         printf("Status du tache :\n \t1- A realiser | 2- En cours | 3- Finalisee  : ");
         if (scanf("%d", &choice2) != 1)
         {
             printf("Entree invalide. Veuillez saisir un entier valide.\n\n");
             while (getchar() != '\n');
+            goto status;
         }
         if (choice2 <= 0 || choice2 >= 4)
         {
             printf("Choix invalide. Veuillez saisir une option valide (1-3).\n\n");
+            goto status;
         }
         switch (choice2)
         {
@@ -124,7 +126,6 @@ while(1){
             strcpy(T[i].status, "Finalisee");
             break;
         }
-    }while(choice2 != 3);
         tach_comp++;
         ID++;
     }
@@ -339,17 +340,19 @@ void modStatus(tache T[])
     {
         if (T[i].id == id)
         {
-            do{
-            c++;
+              c++;
+        status:
             printf("\t\t\t\tStatus du tache :\n \t1- A realiser | 2- En cours | 3- Finalisee  : ");
             if (scanf("%d", &choice2) != 1)
             {
                 printf("\t\tEntree invalide. Veuillez saisir un entier valide.\n\n");
                 while (getchar() != '\n');
+                goto status;
             }
-            else
+            if (choice2 <= 0 || choice2 >= 4)
             {
                 printf("\t\tChoix invalide. Veuillez saisir une option valide (1-3).\n\n");
+                goto status;
             }
             switch (choice2)
             {
@@ -363,7 +366,6 @@ void modStatus(tache T[])
                 strcpy(T[i].status, "Finalisee");
                 break;
             }
-            }while(choice2 != 3);
         }
     }
     if (c == 0)
